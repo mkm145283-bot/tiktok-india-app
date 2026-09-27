@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatShorts - Feed</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        header {
+            background: #0a0a0a;
+            border-bottom: 1px solid #222;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff1753;
+        }
+        .header-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .avatar-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff1753, #ff6b9d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .btn {
+            padding: 8px 16px;
+            background: #ff1753;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #e6144a;
+        }
+        .btn.secondary {
+            background: #222;
+        }
+        .btn.secondary:hover {
+            background: #333;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 240px 1fr 300px;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: auto;
+        }
+        .sidebar {
+            position: sticky;
+            top: 80px;
+            height: max-content;
+        }
+        .panel {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+            border: none;
+            color: #fff;
+            width: 100%;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .nav-item:hover {
+            background: #1a1a1a;
+        }
+        .nav-item.active {
+            background: #ff1753;
+            color: white;
+        }
+        .nav-icon {
+            font-size: 20px;
+        }
+        .main-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .video-card {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .video-card:hover {
+            border-color: #ff1753;
+            box-shadow: 0 0 20px rgba(255,23,83,0.2);
+        }
+        .video-wrapper {
+            background: #000;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            position: relative;
+            overflow: hidden;
+        }
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        .video-info {
+            padding: 16px;
+        }
+        .user-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff1753, #ff6b9d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .user-details {
+            flex: 1;
+        }
+        .username {
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .user-handle {
+            color: #aaa;
+            font-size: 12px;
+        }
+        .follow-btn {
+            padding: 6px 16px;
+            background: #ff1753;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .caption {
+            font-size: 14px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .hashtag {
+            color: #ff1753;
+        }
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #aaa;
+        }
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #222;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .action-btn:hover {
+            background: #ff1753;
+            border-color: #ff1753;
+        }
+        .trending-panel {
+            position: sticky;
+            top: 80px;
+            height: max-content;
+        }
+        .trending-item {
+            padding: 14px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #222;
+        }
+        .trending-item:hover {
+            background: #242424;
+            border-color: #ff1753;
+        }
+        .trend-category {
+            color: #ff1753;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .trend-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .trend-count {
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #aaa;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+        }
+        .modal-header {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #aaa;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #222;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar, .trending-panel {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">🎬 BharatShorts</div>
+        <div class="header-right">
+            <button class="btn secondary" onclick="openUploadModal()">+ अपलोड करें</button>
+            <div class="user-info" id="userInfo"></div>
+            <button class="btn secondary" onclick="logout()">लॉग आउट</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="panel">
+                <button class="nav-item active" onclick="loadFeed('foryou')">
+                    <span class="nav-icon">🏠</span>
+                    <span>होम</span>
+                </button>
+                <button class="nav-item" onclick="loadFeed('trending')">
+                    <span class="nav-icon">🔥</span>
+                    <span>ट्रेंडिंग</span>
+                </button>
+                <button class="nav-item" onclick="loadFeed('following')">
+                    <span class="nav-icon">💙</span>
+                    <span>फॉलो किए हुए</span>
+                </button>
+                <button class="nav-item" onclick="openProfile()">
+                    <span class="nav-icon">👤</span>
+                    <span>मेरा प्रोफाइल</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Feed -->
+        <div class="main-feed" id="feed">
+            <div class="empty">वीडियो लोड हो रहे हैं...</div>
+        </div>
+
+        <!-- Trending Sidebar -->
+        <div class="trending-panel">
+            <div class="panel">
+                <h3 style="margin-bottom: 12px; color: #ff1753;">🔥 भारत में ट्रेंडिंग</h3>
+                <div class="trending-item">
+                    <div class="trend-category">#DANCECHALLENGE</div>
+                    <div class="trend-name">डांस चैलेंज</div>
+                    <div class="trend-count">45.2M वीडियो</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trend-category">#COMEDY</div>
+                    <div class="trend-name">मजेदार वीडियो</div>
+                    <div class="trend-count">32.8M वीडियो</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trend-category">#MUSIC</div>
+                    <div class="trend-name">भारतीय संगीत</div>
+                    <div class="trend-count">28.5M वीडियो</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trend-category">#CRICKET</div>
+                    <div class="trend-name">क्रिकेट</div>
+                    <div class="trend-count">15.3M वीडियो</div>
+                </div>
+                <div class="trending-item">
+                    <div class="trend-category">#BHANGRA</div>
+                    <div class="trend-name">भांगड़ा</div>
+                    <div class="trend-count">12.1M वीडियो</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <div class="modal-header">नई वीडियो अपलोड करें</div>
+            <form onsubmit="handleUpload(event)">
+                <div class="form-group">
+                    <label>वीडियो शीर्षक</label>
+                    <input type="text" id="videoTitle" placeholder="अपनी वीडियो का शीर्षक..." required>
+                </div>
+                <div class="form-group">
+                    <label>विवरण</label>
+                    <textarea id="videoDescription" placeholder="वीडियो के बारे में बताएं..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>हैशटैग्स</label>
+                    <input type="text" id="videoHashtags" placeholder="#DanceChallenge #Comedy #Trending" required>
+                </div>
+                <div class="form-group">
+                    <label>वीडियो फाइल</label>
+                    <input type="file" id="videoFile" accept="video/*" required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn" style="flex: 1;">अपलोड करें</button>
+                    <button type="button" class="btn secondary" style="flex: 1;" onclick="closeUploadModal()">रद्द करें</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get current user
+        const currentUser = JSON.parse(localStorage.getItem('bharatshorts_currentUser'));
+        if (!currentUser) {
+            window.location.href = '1-login.html';
+        }
+
+        // Display user info
+        document.getElementById('userInfo').innerHTML = `
+            <div class="avatar-small" title="${currentUser.username}">${currentUser.avatar}</div>
+            <span>${currentUser.username}</span>
+        `;
+
+        // Sample videos database (in localStorage)
+        let videos = JSON.parse(localStorage.getItem('bharatshorts_videos')) || [
+            {
+                id: 1,
+                title: "शानदार डांस परफॉर्मेंस 💃",
+                description: "एक अद्भुत डांस वीडियो जो आपको मुग्ध कर देगी!",
+                username: "राज कुमार",
+                avatar: "👨",
+                hashtags: "#DanceChallenge #Dance #India",
+                views: 125000,
+                likes: 12500,
+                comments: 450,
+                shares: 800,
+                timestamp: new Date(Date.now() - 3600000).toISOString()
+            },
+            {
+                id: 2,
+                title: "हिलारियस कॉमेडी 😂",
+                description: "आपको हंसाने के लिए तैयार रहें!",
+                username: "कॉमेडी किंग",
+                avatar: "🤣",
+                hashtags: "#Comedy #Funny #Viral",
+                views: 250000,
+                likes: 25000,
+                comments: 890,
+                shares: 2500,
+                timestamp: new Date(Date.now() - 7200000).toISOString()
+            },
+            {
+                id: 3,
+                title: "भांगड़ा ड्रम परफॉर्मेंस 🥁",
+                description: "पारंपरिक भारतीय संगीत और आधुनिक स्टाइल का मेल",
+                username: "ड्रम मास्टर",
+                avatar: "🎵",
+                hashtags: "#Bhangra #Music #Traditional",
+                views: 89000,
+                likes: 8900,
+                comments: 230,
+                shares: 450,
+                timestamp: new Date(Date.now() - 10800000).toISOString()
+            }
+        ];
+
+        function loadFeed(type) {
+            const feed = document.getElementById('feed');
+            let filteredVideos = videos;
+
+            if (type === 'trending') {
+                filteredVideos = videos.sort((a, b) => b.likes - a.likes);
+            }
+
+            if (filteredVideos.length === 0) {
+                feed.innerHTML = '<div class="empty">कोई वीडियो नहीं मिला</div>';
+                return;
+            }
+
+            feed.innerHTML = filteredVideos.map(video => `
+                <div class="video-card">
+                    <div class="video-wrapper">
+                        <div class="video-placeholder">🎥</div>
+                    </div>
+                    <div class="video-info">
+                        <div class="user-row">
+                            <div class="avatar">${video.avatar}</div>
+                            <div class="user-details">
+                                <div class="username">${video.username}</div>
+                                <div class="user-handle">@${video.username.toLowerCase().replace(' ', '')}</div>
+                            </div>
+                            <button class="follow-btn">फॉलो करें</button>
+                        </div>
+                        <div class="caption">
+                            <strong>${video.title}</strong><br>
+                            ${video.description}<br>
+                            <span class="hashtag">${video.hashtags}</span>
+                        </div>
+                        <div class="stats">
+                            <div class="stat">👁️ ${(video.views/1000).toFixed(0)}K</div>
+                            <div class="stat">❤️ ${(video.likes/1000).toFixed(0)}K</div>
+                            <div class="stat">💬 ${video.comments}K</div>
+                        </div>
+                        <div class="actions">
+                            <button class="action-btn" onclick="likeVideo(${video.id})">❤️ Like</button>
+                            <button class="action-btn" onclick="commentVideo(${video.id})">💬 Comment</button>
+                            <button class="action-btn" onclick="shareVideo(${video.id})">📤 Share</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function likeVideo(videoId) {
+            const video = videos.find(v => v.id === videoId);
+            if (video) {
+                video.likes += 1;
+                localStorage.setItem('bharatshorts_videos', JSON.stringify(videos));
+                loadFeed('foryou');
+                alert('❤️ वीडियो को पसंद किया!');
+            }
+        }
+
+        function commentVideo(videoId) {
+            const comment = prompt('अपनी टिप्पणी लिखें:');
+            if (comment) {
+                const video = videos.find(v => v.id === videoId);
+                if (video) {
+                    video.comments += 1;
+                    localStorage.setItem('bharatshorts_videos', JSON.stringify(videos));
+                    alert('💬 आपकी टिप्पणी जोड़ दी गई!');
+                    loadFeed('foryou');
+                }
+            }
+        }
+
+        function shareVideo(videoId) {
+            alert('📤 वीडियो लिंक कॉपी किया गया!');
+        }
+
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.add('active');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('active');
+        }
+
+        function handleUpload(event) {
+            event.preventDefault();
+            const title = document.getElementById('videoTitle').value;
+            const description = document.getElementById('videoDescription').value;
+            const hashtags = document.getElementById('videoHashtags').value;
+            const file = document.getElementById('videoFile').files[0];
+
+            if (!file) {
+                alert('कृपया वीडियो फाइल चुनें');
+                return;
+            }
+
+            const newVideo = {
+                id: videos.length + 1,
+                title: title,
+                description: description,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                hashtags: hashtags,
+                views: 0,
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                timestamp: new Date().toISOString()
+            };
+
+            videos.unshift(newVideo);
+            localStorage.setItem('bharatshorts_videos', JSON.stringify(videos));
+            
+            alert('✅ वीडियो सफलतापूर्वक अपलोड किया गया!');
+            closeUploadModal();
+            loadFeed('foryou');
+            
+            // Clear form
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoDescription').value = '';
+            document.getElementById('videoHashtags').value = '';
+            document.getElementById('videoFile').value = '';
+        }
+
+        function openProfile() {
+            alert(`👤 प्रोफाइल: ${currentUser.username}\n📧 ${currentUser.email}`);
+        }
+
+        function logout() {
+            localStorage.removeItem('bharatshorts_currentUser');
+            window.location.href = '1-login.html';
+        }
+
+        // Load initial feed
+        loadFeed('foryou');
+    </script>
+</body>
+</html>

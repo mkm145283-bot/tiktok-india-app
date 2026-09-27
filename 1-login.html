@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatShorts - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(135deg, #ff1753 0%, #ff6b9d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+        .login-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 380px;
+            width: 90%;
+        }
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ff1753;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            text-align: center;
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #ff1753;
+            box-shadow: 0 0 0 3px rgba(255,23,83,0.1);
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #ff1753;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #e6144a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,23,83,0.3);
+        }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+        .toggle-form {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+        .toggle-form a {
+            color: #ff1753;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .error {
+            color: #ff6b9d;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+        .success {
+            color: #4caf50;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .social-btn {
+            padding: 10px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            transition: all 0.3s;
+        }
+        .social-btn:hover {
+            background: #e8e8e8;
+            border-color: #ff1753;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">🎬 BharatShorts</div>
+        <div class="tagline">भारत की शॉर्ट वीडियो ऐप</div>
+
+        <!-- Login Form -->
+        <div class="form-section active" id="loginForm">
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>ईमेल</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                    <div class="error" id="loginError"></div>
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड</label>
+                    <input type="password" id="loginPassword" placeholder="कम से कम 6 अक्षर" required>
+                </div>
+                <button type="submit" class="btn">लॉगिन करें</button>
+                <div class="success" id="loginSuccess"></div>
+            </form>
+            <div class="social-login">
+                <button class="social-btn">Google से</button>
+                <button class="social-btn">GitHub से</button>
+            </div>
+            <div class="toggle-form">
+                खाता नहीं है? <a onclick="toggleForms()">नया खाता बनाएं</a>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="form-section" id="signupForm">
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>यूजरनेम</label>
+                    <input type="text" id="signupUsername" placeholder="अपना नाम डालें" required>
+                </div>
+                <div class="form-group">
+                    <label>ईमेल</label>
+                    <input type="email" id="signupEmail" placeholder="your@email.com" required>
+                    <div class="error" id="signupError"></div>
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड</label>
+                    <input type="password" id="signupPassword" placeholder="कम से कम 6 अक्षर" required>
+                </div>
+                <div class="form-group">
+                    <label>पासवर्ड की पुष्टि करें</label>
+                    <input type="password" id="confirmPassword" placeholder="पासवर्ड दोबारा डालें" required>
+                </div>
+                <button type="submit" class="btn">खाता बनाएं</button>
+                <div class="success" id="signupSuccess"></div>
+            </form>
+            <div class="toggle-form">
+                पहले से खाता है? <a onclick="toggleForms()">लॉगिन करें</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Store user data in localStorage (for demo)
+        const users = JSON.parse(localStorage.getItem('bharatshorts_users')) || {};
+
+        function toggleForms() {
+            document.getElementById('loginForm').classList.toggle('active');
+            document.getElementById('signupForm').classList.toggle('active');
+            clearErrors();
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error, .success').forEach(el => el.style.display = 'none');
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+            const successEl = document.getElementById('loginSuccess');
+
+            if (!users[email]) {
+                errorEl.textContent = '❌ यह ईमेल पंजीकृत नहीं है';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (users[email].password !== password) {
+                errorEl.textContent = '❌ पासवर्ड गलत है';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Login successful
+            successEl.textContent = '✅ लॉगिन सफल! रीडायरेक्ट हो रहे हैं...';
+            successEl.style.display = 'block';
+            
+            localStorage.setItem('bharatshorts_currentUser', JSON.stringify({
+                email: email,
+                username: users[email].username,
+                avatar: users[email].avatar
+            }));
+            
+            setTimeout(() => {
+                window.location.href = '2-feed.html';
+            }, 1500);
+        }
+
+        function handleSignup(event) {
+            event.preventDefault();
+            clearErrors();
+            const username = document.getElementById('signupUsername').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorEl = document.getElementById('signupError');
+            const successEl = document.getElementById('signupSuccess');
+
+            if (password.length < 6) {
+                errorEl.textContent = '❌ पासवर्ड कम से कम 6 अक्षर होना चाहिए';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorEl.textContent = '❌ पासवर्ड मेल नहीं खा रहे';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            if (users[email]) {
+                errorEl.textContent = '❌ यह ईमेल पहले से पंजीकृत है';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Create account
+            users[email] = {
+                username: username,
+                password: password,
+                avatar: String.fromCodePoint(0x1F600 + Math.floor(Math.random() * 50)), // Random emoji
+                createdAt: new Date().toISOString(),
+                followers: 0,
+                following: 0,
+                videos: 0
+            };
+            
+            localStorage.setItem('bharatshorts_users', JSON.stringify(users));
+            successEl.textContent = '✅ खाता सफलतापूर्वक बनाया गया! लॉगिन कर रहे हैं...';
+            successEl.style.display = 'block';
+            
+            localStorage.setItem('bharatshorts_currentUser', JSON.stringify({
+                email: email,
+                username: username,
+                avatar: users[email].avatar
+            }));
+            
+            setTimeout(() => {
+                window.location.href = '2-feed.html';
+            }, 1500);
+        }
+
+        // Demo accounts
+        if (Object.keys(users).length === 0) {
+            users['demo@bharatshorts.com'] = {
+                username: 'Demo User',
+                password: '123456',
+                avatar: '👨',
+                followers: 1000,
+                following: 500,
+                videos: 25
+            };
+            localStorage.setItem('bharatshorts_users', JSON.stringify(users));
+        }
+    </script>
+</body>
+</html>
