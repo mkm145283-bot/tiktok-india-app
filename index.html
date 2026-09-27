@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>टिकटॉक इंडिया - शॉर्ट वीडियो ऐप</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #fff;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: #0a0a0a;
+            padding: 20px;
+            border-right: 1px solid #333;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #ff0050;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-item:hover {
+            background: #1a1a1a;
+        }
+
+        .nav-item.active {
+            background: #ff0050;
+            color: #fff;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .btn-upload {
+            width: 100%;
+            padding: 12px;
+            background: #ff0050;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-upload:hover {
+            background: #cc003f;
+            transform: scale(1.02);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Feed Section */
+        .feed {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #000;
+        }
+
+        .video-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 0, 80, 0.3);
+        }
+
+        .video-container {
+            background: #000;
+            aspect-ratio: 9/16;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .video-info {
+            padding: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0050, #ff6b9d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .user-handle {
+            color: #aaa;
+            font-size: 12px;
+        }
+
+        .video-title {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .video-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Right Sidebar - Actions */
+        .actions-sidebar {
+            width: 80px;
+            background: #0a0a0a;
+            border-left: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 20px;
+        }
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: #ff0050;
+            border-color: #ff0050;
+            transform: scale(1.1);
+        }
+
+        .action-count {
+            font-size: 10px;
+            color: #aaa;
+            text-align: center;
+        }
+
+        /* Trending Section */
+        .trending {
+            width: 300px;
+            background: #0a0a0a;
+            border-left: 1px solid #333;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .trending-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .trending-item {
+            padding: 12px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .trending-item:hover {
+            background: #2a2a2a;
+        }
+
+        .trend-tag {
+            color: #ff0050;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .trend-name {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .trend-count {
+            color: #aaa;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Modal for Upload */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #ff0050;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit {
+            background: #ff0050;
+            color: #fff;
+        }
+
+        .btn-submit:hover {
+            background: #cc003f;
+        }
+
+        .btn-cancel {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-cancel:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Sidebar - Navigation -->
+        <div class="sidebar">
+            <div class="logo">🎬 टिकटॉक</div>
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <span class="nav-icon">🏠</span>
+                    <span>होम</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">🔍</span>
+                    <span>खोजें</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">❤️</span>
+                    <span>पसंदीदा</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">👤</span>
+                    <span>प्रोफाइल</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">⚙️</span>
+                    <span>सेटिंग्स</span>
+                </li>
+            </ul>
+            <button class="btn-upload" onclick="openUploadModal()">+ अपलोड करें</button>
+        </div>
+
+        <!-- Main Content - Feed -->
+        <div class="main-content">
+            <div class="feed" id="feed">
+                <!-- Video Cards will be populated here -->
+            </div>
+
+            <!-- Right Sidebar - Actions -->
+            <div class="actions-sidebar">
+                <div>
+                    <button class="action-btn" onclick="likeVideo()">❤️</button>
+                    <div class="action-count" id="likeCount">0</div>
+                </div>
+                <div>
+                    <button class="action-btn" onclick="commentVideo()">💬</button>
+                    <div class="action-count">टिप्पणी</div>
+                </div>
+                <div>
+                    <button class="action-btn" onclick="shareVideo()">📤</button>
+                    <div class="action-count">शेयर</div>
+                </div>
+                <div>
+                    <button class="action-btn" onclick="bookmarkVideo()">🔖</button>
+                    <div class="action-count">सेव</div>
+                </div>
+            </div>
+
+            <!-- Trending Section -->
+            <div class="trending">
+                <div class="trending-title">🔥 ट्रेंडिंग</div>
+                <div class="trending-item" onclick="searchTrend('#DanceChallenge')">
+                    <div class="trend-tag">#DanceChallenge</div>
+                    <div class="trend-name">डांस चैलेंज</div>
+                    <div class="trend-count">25.5M वीडियो</div>
+                </div>
+                <div class="trending-item" onclick="searchTrend('#MusicBhangra')">
+                    <div class="trend-tag">#MusicBhangra</div>
+                    <div class="trend-name">भांगड़ा संगीत</div>
+                    <div class="trend-count">18.3M वीडियो</div>
+                </div>
+                <div class="trending-item" onclick="searchTrend('#ComedyVines')">
+                    <div class="trend-tag">#ComedyVines</div>
+                    <div class="trend-name">कॉमेडी विडियो</div>
+                    <div class="trend-count">42.1M वीडियो</div>
+                </div>
+                <div class="trending-item" onclick="searchTrend('#BollywoodTrending')">
+                    <div class="trend-tag">#BollywoodTrending</div>
+                    <div class="trend-name">बॉलीवुड ट्रेंड</div>
+                    <div class="trend-count">31.7M वीडियो</div>
+                </div>
+                <div class="trending-item" onclick="searchTrend('#IndianHiphop')">
+                    <div class="trend-tag">#IndianHiphop</div>
+                    <div class="trend-name">हिप-हॉप भारत</div>
+                    <div class="trend-count">12.9M वीडियो</div>
+                </div>
+                <div class="trending-item" onclick="searchTrend('#FitnessChallenge')">
+                    <div class="trend-tag">#FitnessChallenge</div>
+                    <div class="trend-name">फिटनेस चैलेंज</div>
+                    <div class="trend-count">8.4M वीडियो</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div class="modal" id="uploadModal">
+        <div class="modal-content">
+            <h2>नई वीडियो अपलोड करें</h2>
+            <input type="text" id="videoTitle" placeholder="वीडियो का शीर्षक...">
+            <input type="text" id="videoHashtags" placeholder="हैशटैग्स जोड़ें (#DanceChallenge)">
+            <input type="file" id="videoFile" accept="video/*" style="color: #aaa;">
+            <div class="modal-buttons">
+                <button class="btn-submit" onclick="uploadVideo()">अपलोड करें</button>
+                <button class="btn-cancel" onclick="closeUploadModal()">रद्द करें</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample Video Data
+        const videos = [
+            {
+                id: 1,
+                title: "शानदार डांस परफॉर्मेंस 💃",
+                user: "राजा कुमार",
+                handle: "@rajdancer",
+                avatar: "रा",
+                views: "1.2M",
+                likes: 256000,
+                comments: 4500,
+                shares: 12000,
+                emoji: "🎭"
+            },
+            {
+                id: 2,
+                title: "फनी कॉमेडी स्किट 😂",
+                user: "हंसी के फव्वारे",
+                handle: "@comedyking",
+                avatar: "हफ",
+                views: "2.5M",
+                likes: 512000,
+                comments: 8900,
+                shares: 25000,
+                emoji: "🎬"
+            },
+            {
+                id: 3,
+                title: "भांगड़ा ड्रम परफॉर्मेंस 🥁",
+                user: "ड्रम मास्टर",
+                handle: "@drummaster",
+                avatar: "डम",
+                views: "890K",
+                likes: 156000,
+                comments: 2300,
+                shares: 8900,
+                emoji: "🎵"
+            },
+            {
+                id: 4,
+                title: "योग और फिटनेस टिप्स 💪",
+                user: "फिट इंडिया",
+                handle: "@fitindia",
+                avatar: "फि",
+                views: "3.2M",
+                likes: 625000,
+                comments: 12000,
+                shares: 45000,
+                emoji: "🏋️"
+            },
+            {
+                id: 5,
+                title: "खाना बनाने की ट्रिक्स 👨‍🍳",
+                user: "शेफ राज",
+                handle: "@chefraj",
+                avatar: "शर",
+                views: "1.8M",
+                likes: 342000,
+                comments: 6700,
+                shares: 18900,
+                emoji: "🍳"
+            }
+        ];
+
+        // Load feed
+        function loadFeed() {
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+            videos.forEach(video => {
+                feed.innerHTML += `
+                    <div class="video-card">
+                        <div class="video-container">
+                            <div class="video-placeholder">${video.emoji}</div>
+                        </div>
+                        <div class="video-info">
+                            <div class="user-info">
+                                <div class="avatar">${video.avatar}</div>
+                                <div>
+                                    <div class="user-name">${video.user}</div>
+                                    <div class="user-handle">${video.handle}</div>
+                                </div>
+                            </div>
+                            <div class="video-title">${video.title}</div>
+                            <div class="video-stats">
+                                <div class="stat">👁️ ${video.views}</div>
+                                <div class="stat">❤️ ${(video.likes/1000).toFixed(0)}K</div>
+                                <div class="stat">💬 ${(video.comments/1000).toFixed(1)}K</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Like Video
+        function likeVideo() {
+            const count = document.getElementById('likeCount');
+            count.textContent = parseInt(count.textContent) + 1;
+            alert('❤️ वीडियो को पसंद किया!');
+        }
+
+        // Comment Video
+        function commentVideo() {
+            const comment = prompt('अपनी टिप्पणी लिखें:');
+            if (comment) {
+                alert(`💬 आपकी टिप्पणी: "${comment}"`);
+            }
+        }
+
+        // Share Video
+        function shareVideo() {
+            alert('📤 वीडियो साझा किया गया!');
+        }
+
+        // Bookmark Video
+        function bookmarkVideo() {
+            alert('🔖 वीडियो सहेजी गई!');
+        }
+
+        // Upload Modal Functions
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.add('active');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.remove('active');
+        }
+
+        function uploadVideo() {
+            const title = document.getElementById('videoTitle').value;
+            const hashtags = document.getElementById('videoHashtags').value;
+            const file = document.getElementById('videoFile').value;
+
+            if (!title || !hashtags || !file) {
+                alert('कृपया सभी फील्ड भरें!');
+                return;
+            }
+
+            alert(`✅ वीडियो अपलोड हुआ!\n\nशीर्षक: ${title}\nहैशटैग: ${hashtags}`);
+            closeUploadModal();
+            document.getElementById('videoTitle').value = '';
+            document.getElementById('videoHashtags').value = '';
+            document.getElementById('videoFile').value = '';
+        }
+
+        // Search Trend
+        function searchTrend(tag) {
+            alert(`🔍 "${tag}" के लिए खोज रहे हैं...`);
+        }
+
+        // Initialize
+        loadFeed();
+    </script>
+</body>
+</html>
